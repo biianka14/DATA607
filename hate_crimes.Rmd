@@ -1,0 +1,74 @@
+---
+title: "Higher Rates Of Hate Crimes Are Tied To Income Inequality"
+author: "Bianka Figueroa"
+date: "8/29/2021"
+output: html_document
+---
+# Overview
+#### source: https://fivethirtyeight.com/features/higher-rates-of-hate-crimes-are-tied-to-income-inequality/
+
+#### The article I chose, analyzed hate crime data before and after the 2016 election. They found that income inequality was an important predictor for hate incidents across the states. Hate crime data is limited so they used data from two sources: FBI and Southern Poverty Law Center. 
+
+#### For this assignment, I analyzed the data, ran some descriptive statistics and plotted the data in a graph to see the inequality by state.
+
+```{r, warning=FALSE, include=T}
+knitr::opts_chunk$set(echo = TRUE)
+require(data.table)
+
+hate_crimes <- fread("hate_crimes.csv", 
+                    stringsAsFactors = F, 
+                    data.table = F, 
+                    colClasses=list(character=c(1)))
+
+```
+
+## Organizing & Analyzing Dataset
+
+#### 1. Subset of main dataset
+
+```{r, warning=FALSE, include=T}
+crimedata2016 <- hate_crimes[,c(1:3,5:8,9:12)]
+```
+
+#### 2. Renaming Variables
+
+```{r, warning=FALSE, include=T}
+names(crimedata2016)[2] <- "hhincome"
+names(crimedata2016)[3] <- "pop_unemployed"
+names(crimedata2016)[4] <- "pop_HSdiploma"
+names(crimedata2016)[5] <- "non_citizen"
+names(crimedata2016)[6] <- "white_poverty"
+names(crimedata2016)[7] <- "non_white"
+names(crimedata2016)[8] <- "voted_trump"
+names(crimedata2016)[9] <- "GINI_Index"
+names(crimedata2016)[10] <- "hatecrimes<2015"
+names(crimedata2016)[11] <- "hatecrimes=2016"
+```
+
+### 3. Basic GGPlot: Income Inequality by State
+
+```{r, warning=FALSE, include=T}
+State_graph <- crimedata2016[,c(1,9:11)]
+data2015 <- crimedata2016[,c(1,9,10)]
+data2016 <- crimedata2016[,c(1,9,11)]
+
+summary(State_graph)
+
+require(ggplot2)
+
+ggplot(data = State_graph) +
+  geom_bar(mapping = aes(x = GINI_Index))
+```
+
+# Conclusions
+
+#### When running simple descriptive statistics (summary), we can see that the state with lowest GINI Index (income inequality) is District of Columbia (0.04), while the state with highest is Wyoming (0.7). 
+
+# Findings & Recommendations 
+
+#### I would like to look more at the data and be able to analyze it more in detail. My next step will be to put the GINI Index into categories (relative, equality, big income gap, etc) and plot them again to see a better graph. In addition, I would like to add more information to the graph.
+
+#### I only focused on the income inequality by State. However, I would like to have two different graphs separated into categories with 2015 and 2016 data.
+
+
+
