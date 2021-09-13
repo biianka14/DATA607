@@ -1,0 +1,178 @@
+---
+title: "Assignment 3"
+author: "Bianka Figueroa"
+date: "9/12/2021"
+output: html_document
+---
+# Overview
+
+#### Please deliver links to an R Markdown file (in GitHub and rpubs.com) with solutions to the problems below.  You may work in a small group, but please submit separately with names of all group participants in your submission.
+
+## Question 1
+
+#### Using the 173 majors listed in fivethirtyeight.com’s College Majors dataset [https://fivethirtyeight.com/features/the-economic-guide-to-picking-a-college-major/], provide code that identifies the majors that contain either "DATA" or "STATISTICS"
+
+```{r, warning=FALSE, include=T}
+require(tidyverse)
+require(ggrepel)
+require(stringr)
+
+college_majors <- read.csv(url("https://raw.githubusercontent.com/fivethirtyeight/data/master/college-majors/majors-list.csv"))
+
+data_majors = subset(college_majors, grepl("DATA|STATISTICS", Major))
+data_majors
+```
+
+## Question 2
+
+#### Write code that transforms the data below:
+
+```{r, warning=FALSE, include=T}
+
+## [1] "bell pepper"  "bilberry"     "blackberry"   "blood orange"
+
+## [5] "blueberry"    "cantaloupe"   "chili pepper" "cloudberry"  
+
+## [9] "elderberry"   "lime"         "lychee"       "mulberry"    
+
+## [13] "olive"        "salal berry"
+```
+
+### Into a format like this:
+
+```{r, warning=FALSE, include=T}
+
+c("bell pepper", "bilberry", "blackberry", "blood orange", "blueberry", "cantaloupe", 
+"chili pepper", "cloudberry", "elderberry", "lime", "lychee", "mulberry", "olive", 
+"salal berry")
+
+fruits_data1 <- c("bell pepper", "bilberry", "blackberry", "blood orange")
+fruits_data2 <- c("blueberry", "cantaloupe", "chili pepper", "cloudberry")
+fruits_data3 <- c("elderberry", "lime", "lychee", "mulberry")
+fruits_data4 <- c("olive", "salal berry")
+fruits_data <- c(fruits_data1,fruits_data2,fruits_data3,fruits_data4)
+fruits_data
+
+```
+
+## Question 3
+
+#### Describe, in words, what these expressions will match:
+
+```{r, warning=FALSE, include=T}
+"(.)\1\1"
+```
+
+#### The expression above is missing a second backlash (\), therefore there won't be any match. The correct expression should have two backlash (\\). See example below:
+
+### Example1:
+
+```{r, warning=FALSE, include=T}
+example1 <- c("caaat", "dooog", "bird")
+writeLines(example1)
+
+str_view(example1, "(.)\1\1", match = TRUE)
+```
+
+#### One backlash (\) shows nothing
+
+```{r, warning=FALSE, include=T}
+str_view(example1, "(.)\\1\\1", match = TRUE)
+```
+
+#### Two backlash (\\) shows the words with three matching characters
+
+```{r, warning=FALSE, include=T}
+"(.)(.)\\2\\1"
+```
+
+#### The expression above, will show the same two characters followed by the same two characters in reverse. 
+
+### Example2:
+
+```{r, warning=FALSE, include=T}
+example2 <- c("follow, hollow, sink, bed")
+writeLines(example2)
+
+str_view_all(example2, "(.)(.)\\2\\1", match = TRUE)
+
+"(..)\1"
+```
+
+#### The expression above is also missing a second backlash (\), so it will show nothing.The correct expression shouls have two backlash (\\). See example below:
+
+### Example3:
+
+```{r, warning=FALSE, include=T}
+example3 <- c("banana", "pear", "papaya")
+writeLines(example3)
+
+str_view_all(example3, "(..)\1", match = TRUE)
+```
+
+#### One backlash (\) shows nothing
+
+```{r, warning=FALSE, include=T}
+str_view_all(example3, "(..)\\1", match = TRUE)
+```
+
+#### Two backlash (\\) shows the characters that are repeated.
+
+```{r, warning=FALSE, include=T}
+"(.).\\1.\\1"
+```
+
+#### The expression above, shows that the third and fifth character match the first character, while the second and fourth can be any character. See example below:
+
+### Example4:
+
+```{r, warning=FALSE, include=T}
+example4 <- c("banana", "Kosovo", "monkey")
+writeLines(example4)
+
+str_view_all(example4, "(.).\\1.\\1", match = TRUE)
+
+"(.)(.)(.).*\\3\\2\\1"
+```
+
+#### The expression above is a little similar to the previous expression. It will look for the three same characters with a number of characters in between in reverse order. See example below:
+
+### Example5:
+
+```{r, warning=FALSE, include=T}
+example5 <- c("lolololo", "bananana", "apple")
+writeLines(example5)
+
+str_view_all(example5, "(.)(.)(.).*\\3\\2\\1", match = TRUE)
+```
+
+## Question 4
+
+#### Construct regular expressions to match words that:
+
+### a) Start and end with the same character.
+
+```{r, warning=FALSE, include=T}
+data1 <- c("mom", "dad", "sons", "daughter")
+writeLines(data1)
+
+str_view_all(data1, "^(.).*\\1$", match = TRUE)
+```
+
+### b) Contain a repeated pair of letters (e.g. "church" contains "ch" repeated twice.)
+
+```{r, warning=FALSE, include=T}
+data2 <- c("church", "banana", "apple")
+writeLines(data2)
+
+str_view_all(data2, "(..).*\\1", match = TRUE)
+```
+
+### c) Contain one letter repeated in at least three places (e.g. "eleven" contains three "e"s.)
+
+```{r, warning=FALSE, include=T}
+data3 <- c("eleven", "banana", "Kosovo", "dog")
+writeLines(data3)
+
+str_view_all(data3, "(.).\\1.\\1", match = TRUE)
+```
