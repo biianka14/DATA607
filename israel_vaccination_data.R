@@ -1,0 +1,73 @@
+setwd("C:/Users/BFigueroa/OneDrive - City University of New York/SPS/DATA MANAGEMENT/Weekly Assignments/Week Five")
+
+#install.packages("dplyr")
+#install.packages("tidyr")
+#install.packages("hflights")
+
+require(dplyr)
+library(hflights)
+
+# Assignment #5
+
+### 1) Create a .CSV file with information from the spreadsheet provided.
+
+### Created a .CSV file for Israel population Data
+
+israel_pop <- data.frame(
+  age = c("Over 50", "Under 50"),
+  not_vax = c(1116834, 186078),
+  not_vax_pct = c(23.3, 7.9),
+  full_vax = c(3501118, 2133516),
+  full_vax_pct = c(73.0, 90.4),
+  not_vax_per100 = c(43, 171),
+  full_vax_per100 = c(11, 290)
+)
+
+israel_pop
+
+write.csv(israel_pop, file = "israelpopulation.csv")
+
+### 2) Read the information from .CSV created into R and use tidyr and dplyr to tidy and transform data.
+
+israel_cases <- read.csv("israelpopulation.csv")
+
+require(dplyr)
+require(tidyr)
+library(dplyr)
+
+long_data <- israel_cases %>%
+  select(age,not_vax_per100,full_vax_per100) %>%
+  mutate(efficacy = 1 - (full_vax_per100 / not_vax_per100))
+
+long_data
+  
+
+### 3) Perform analysis as described in the spreadsheet:
+
+### a. Do you have enough information to calculate the total population? What does this total population represent?
+
+### In my opinion, there is not enough information to calculate the total population. This dataset contains only people who are not vaccinated and those who are fully vaccinated (or have both doses of the vaccine). Therefore, this dataset excludes the population who have one dose of the vaccine. So, we cannot expect that the dataset includes all the population.
+
+### b. Calculate the Efficacy vs. Disease; Explain your results.
+
+### Calculating efficacy in people 50 and above
+
+over50 <- 1 - (israel_cases$full_vax_per100[1]/israel_cases$not_vax_per100[1])
+over50
+
+### Calculating efficacy in people 50 and less
+
+less50 <- 1 - (israel_cases$full_vax_per100[2]/israel_cases$not_vax_per100[2])
+less50
+
+### Results show that the efficacy of the vaccine in severe cases (hospitalizations) are better for those above 50 years old than for those 50 or less. So, the older population is better protected than the younger population.
+
+### c. From your calculation of efficacy vs disease, are you able to compare the rate of severe cases in unvaccinated individuals to that in vaccinated individuals?
+
+not_vax <- sum(israel_cases$not_vax_per100)
+not_vax
+
+fully_vax <- sum(israel_cases$full_vax_per100)
+fully_vax
+
+### After adding up the numbers and getting the total number for not vaccinated people and fully vaccinated people, we can see that there the rate of hospitalizations is higher for people fully vaccinated people than for those who are not vaccinated. 
